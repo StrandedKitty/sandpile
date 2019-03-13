@@ -59,7 +59,6 @@ function main() {
 	var buffer = new Uint8Array(width * height * 4);
 	buffer[(width/2+(height/2)*width)*4] = 255;
 	buffer[(width/2+(height/2)*width)*4+1] = 255;
-	buffer[(width/2+(height/2)*width)*4+2] = 255;
 	
 	gl.bindTexture(gl.TEXTURE_2D, targetTexture1);
 	var level = 0;
