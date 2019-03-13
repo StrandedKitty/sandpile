@@ -43,13 +43,15 @@ function main() {
 	var color1LocationFinal = gl.getUniformLocation(programFinal, "u_color1");
 	var color2LocationFinal = gl.getUniformLocation(programFinal, "u_color2");
 	var color3LocationFinal = gl.getUniformLocation(programFinal, "u_color3");
+	var color4LocationFinal = gl.getUniformLocation(programFinal, "u_color4");
 	gl.uniform1i(imageLocationFinal, 0);
 	gl.uniform2f(resolutionLocationFinal, window.innerWidth*window.devicePixelRatio, window.innerHeight*window.devicePixelRatio);
 	gl.uniform2f(sizeLocationFinal, width, height);
 	
-	gl.uniform3fv(color1LocationFinal, [255, 0, 104]);
-	gl.uniform3fv(color2LocationFinal, [0, 234, 139]);
-	gl.uniform3fv(color3LocationFinal, [57, 107, 255]);
+	gl.uniform3fv(color1LocationFinal, [233, 30, 99]);
+	gl.uniform3fv(color2LocationFinal, [255, 193, 7]);
+	gl.uniform3fv(color3LocationFinal, [0, 188, 212]);
+	gl.uniform3fv(color4LocationFinal, [76, 175, 80]);
 	
 	gl.useProgram(program);
 	
@@ -189,15 +191,8 @@ function main() {
 				
 				counter++;
 			}
-			
-			gl.bindTexture(gl.TEXTURE_2D, counter%2 ? targetTexture1 : targetTexture2);
-		
-			gl.readPixels( 0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
-			buffer[(width/2+(height/2)*width)*4] = 255;
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
 		}
 		
-		gl.useProgram(programFinal);
 		gl.useProgram(programFinal);
 		gl.viewport(0, 0, window.innerWidth*window.devicePixelRatio, window.innerHeight*window.devicePixelRatio);
 		gl.uniform2f(resolutionLocationFinal, window.innerWidth*window.devicePixelRatio, window.innerHeight*window.devicePixelRatio);
@@ -205,7 +200,6 @@ function main() {
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, counter%2 ? targetTexture1 : targetTexture2);
 		
-	  
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 		

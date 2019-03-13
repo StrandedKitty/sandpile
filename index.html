@@ -53,6 +53,7 @@
 			vec2 p = 1.0/u_resolution;
 			vec2 coord = v_texCoord + vec2(x, y)*(1.0/u_resolution);
 			if(coord.x < p.x || coord.x > 1. || coord.y < p.y || coord.y > 1.) return 0;
+			else if(coord.x >= 0.5 && coord.x <= 0.5+p.x && coord.y >= 0.5 && coord.y <= 0.5+p.y) return 255;
 			else return int(texture2D(u_image, coord).r*255.0);
 		}
 		int mod(int a, int b) {
@@ -89,6 +90,7 @@
 		uniform vec3 u_color1;
 		uniform vec3 u_color2;
 		uniform vec3 u_color3;
+		uniform vec3 u_color4;
 		uniform vec2 u_size;
 		uniform float u_scale;
 		
@@ -102,13 +104,14 @@
 				if(height == 0) color = vec3(0.98, 0.98, 0.98);
 				if(height == 1) color = u_color1/255.;
 				if(height == 2) color = u_color2/255.;
-				if(height >= 3) color = u_color3/255.;
+				if(height == 3) color = u_color3/255.;
+				if(height > 3) color = u_color4/255.;
 			}
 			
 			gl_FragColor = vec4(color, 1.0);
 		}
 		</script>
 		<script src="webgl-utils.js"></script>
-		<script src="main.js" defer></script>
+		<script src="main.js"></script>
 	</body>
 </html>
