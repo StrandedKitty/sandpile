@@ -48,26 +48,21 @@
 		void main() {
 			vec2 p = 1.0/u_resolution;
 			vec3 color;
-			if(u_counter == 0) {
-				if(v_texCoord.x > 0.5-p.x && v_texCoord.x < 0.5 && v_texCoord.y > 0.5-p.y && v_texCoord.y < 0.5) color = vec3(1.0, 1.0, 1.0);
-				else color = vec3(0.0, 0.0, 0.0);
-			} else {
-				int h = get(0.0, 0.0);
-				int hLeft = get(-1.0, 0.0);
-				int hRight = get(1.0, 0.0);
-				int hTop = get(0.0, 1.0);
-				int hBottom = get(0.0, -1.0);
-				
-				if(h >= 4) h -= 4;
-				if(hLeft >= 4) h += 1;
-				if(hRight >= 4) h += 1;
-				if(hTop >= 4) h += 1;
-				if(hBottom >= 4) h += 1;
-				
-				color.r = float(mod(mod(h, 256*256), 256))/255.0;
-				color.g = float(mod(h, 256*256)/256)/255.0;
-				color.b = float(h/(256*256))/255.0;
-			}
+			int h = get(0.0, 0.0);
+			int hLeft = get(-1.0, 0.0);
+			int hRight = get(1.0, 0.0);
+			int hTop = get(0.0, 1.0);
+			int hBottom = get(0.0, -1.0);
+			
+			if(h >= 4) h -= 4;
+			if(hLeft >= 4) h += 1;
+			if(hRight >= 4) h += 1;
+			if(hTop >= 4) h += 1;
+			if(hBottom >= 4) h += 1;
+			
+			color.r = float(mod(mod(h, 256*256), 256))/255.0;
+			color.g = float(mod(h, 256*256)/256)/255.0;
+			color.b = float(h/(256*256))/255.0;
 			gl_FragColor = vec4(color, 1.0);
 		}
 		</script>
@@ -154,6 +149,11 @@
 				targetTexture1 = gl.createTexture();
 				targetTexture2 = gl.createTexture();
 				
+				var buffer = new Uint8Array(width * height * 4);
+				buffer[width*height*2] = 255;
+				buffer[width*height*2-1] = 255;
+				buffer[width*height*2-2] = 255;
+				
 				gl.bindTexture(gl.TEXTURE_2D, targetTexture1);
 				var level = 0;
 				var internalFormat = gl.RGBA;
@@ -172,7 +172,7 @@
 				var border = 0;
 				var format = gl.RGBA;
 				var type = gl.UNSIGNED_BYTE;
-				gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, format, type, null);
+				gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, format, type, buffer);
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -279,6 +279,7 @@
 
 					if(!paused) {
 						for(var i=0; i<20; i++) {
+						
 							gl.uniform1i(counterLocation, counter);
 							
 							gl.activeTexture(gl.TEXTURE0);
@@ -290,8 +291,6 @@
 							counter++;
 						}
 					}
-					
-					
 					
 					gl.useProgram(programFinal);
 					gl.useProgram(programFinal);
