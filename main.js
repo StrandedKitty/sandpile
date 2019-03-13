@@ -193,7 +193,6 @@ function main() {
 		}
 		
 		gl.useProgram(programFinal);
-		gl.useProgram(programFinal);
 		gl.viewport(0, 0, window.innerWidth*window.devicePixelRatio, window.innerHeight*window.devicePixelRatio);
 		gl.uniform2f(resolutionLocationFinal, window.innerWidth*window.devicePixelRatio, window.innerHeight*window.devicePixelRatio);
 		gl.uniform1f(scaleLocationFinal, scale);
