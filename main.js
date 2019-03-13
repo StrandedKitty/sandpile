@@ -58,7 +58,6 @@ function main() {
 	
 	var buffer = new Uint8Array(width * height * 4);
 	buffer[(width/2+(height/2)*width)*4] = 255;
-	buffer[(width/2+(height/2)*width)*4+1] = 255;
 	
 	gl.bindTexture(gl.TEXTURE_2D, targetTexture1);
 	var level = 0;
@@ -66,7 +65,7 @@ function main() {
 	var border = 0;
 	var format = gl.RGBA;
 	var type = gl.UNSIGNED_BYTE;
-	gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, format, type, null);
+	gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, format, type, buffer);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -171,8 +170,8 @@ function main() {
 	var offset = 0;
 	gl.vertexAttribPointer(texcoordLocationFinal, size, type, normalize, stride, offset);
 	
-	draw();
 	var counter = 0;
+	draw();
 	function draw(){
 		requestAnimationFrame(draw);
 		
@@ -190,20 +189,28 @@ function main() {
 				
 				counter++;
 			}
+			
+			gl.bindTexture(gl.TEXTURE_2D, counter%2 ? targetTexture1 : targetTexture2);
+		
+			gl.readPixels( 0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
+			buffer[(width/2+(height/2)*width)*4] = 255;
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
 		}
 		
+		gl.useProgram(programFinal);
 		gl.useProgram(programFinal);
 		gl.viewport(0, 0, window.innerWidth*window.devicePixelRatio, window.innerHeight*window.devicePixelRatio);
 		gl.uniform2f(resolutionLocationFinal, window.innerWidth*window.devicePixelRatio, window.innerHeight*window.devicePixelRatio);
 		gl.uniform1f(scaleLocationFinal, scale);
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, counter%2 ? targetTexture1 : targetTexture2);
+		
+	  
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 		
 		document.getElementById("gen").innerHTML = counter;
 	}
-	
 	window.addEventListener('resize', function(){
 		canvas.width = window.innerWidth*window.devicePixelRatio;
 		canvas.height = window.innerHeight*window.devicePixelRatio;
@@ -223,18 +230,19 @@ function main() {
 	}, false);
 }
 
+main();
+
 function setRectangle(gl, x, y, width, height) {
 	var x1 = x;
 	var x2 = x + width;
 	var y1 = y;
 	var y2 = y + height;
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-	 x1, y1,
-	 x2, y1,
-	 x1, y2,
-	 x1, y2,
-	 x2, y1,
-	 x2, y2,
+		x1, y1,
+		x2, y1,
+		x1, y2,
+		x1, y2,
+		x2, y1,
+		x2, y2,
 	]), gl.STATIC_DRAW);
 }
-main();
