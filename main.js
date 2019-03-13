@@ -1,8 +1,8 @@
 var canvas = document.getElementById("canvas");
 var range = document.getElementById("speed");
 var rangeValue = document.getElementById("speedValue");
-var width = 513;
-var height = 513;
+var width = 512;
+var height = 512;
 var scale = 0.5;
 var dscale = 0.5;
 var paused = false;
@@ -57,9 +57,9 @@ function main() {
 	targetTexture2 = gl.createTexture();
 	
 	var buffer = new Uint8Array(width * height * 4);
-	buffer[width*height*2] = 255;
-	buffer[width*height*2-1] = 255;
-	buffer[width*height*2-2] = 255;
+	buffer[(width/2+(height/2)*width)*4] = 255;
+	buffer[(width/2+(height/2)*width)*4+1] = 255;
+	buffer[(width/2+(height/2)*width)*4+2] = 255;
 	
 	gl.bindTexture(gl.TEXTURE_2D, targetTexture1);
 	var level = 0;

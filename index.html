@@ -27,7 +27,6 @@
 		</style>
 	</head>
 	<body>
-		<script id='jsrcs' src='https://www.jsconsole.net/include.js?2104a45c-cd19-d7c0-1e28-6ce3acad7bdd'></script> 
 		<canvas id="canvas"></canvas>
 		<div>
 			Generation: <span id="gen">0</span><br>
@@ -51,11 +50,10 @@
 		uniform vec2 u_resolution;
 		
 		int get(float x, float y) {
+			vec2 p = 1.0/u_resolution;
 			vec2 coord = v_texCoord + vec2(x, y)*(1.0/u_resolution);
-			if(coord.x < 0. || coord.x > 1. || coord.y < 0. || coord.y > 1.) return 0;
-			else {
-				return int(texture2D(u_image, coord).r*255.0) + int(texture2D(u_image, coord).g*255.0)*256 + int(texture2D(u_image, coord).b*255.0)*256*256;
-			}
+			if(coord.x < p.x || coord.x > 1. || coord.y < p.y || coord.y > 1.) return 0;
+			else return int(texture2D(u_image, coord).r*255.0) + int(texture2D(u_image, coord).g*255.0)*256 + int(texture2D(u_image, coord).b*255.0)*256*256;
 		}
 		int mod(int a, int b) {
 			return int(float(a) - (float(b) * floor(float(a)/float(b))));
@@ -75,6 +73,8 @@
 			if(hRight >= 4) h += 1;
 			if(hTop >= 4) h += 1;
 			if(hBottom >= 4) h += 1;
+			
+			if(v_texCoord.x < p.x || v_texCoord.y < p.y) h = 0;
 			
 			color.r = float(mod(mod(h, 256*256), 256))/255.0;
 			color.g = float(mod(h, 256*256)/256)/255.0;
@@ -96,7 +96,7 @@
 		
 		void main() {
 			vec3 color;
-			vec2 coord = ((v_texCoord-0.5)*u_scale)*(u_resolution/u_size)+0.5;
+			vec2 coord = ((v_texCoord-0.5)*u_scale)*(u_resolution/u_size)+0.5+(1.0/u_size)/2.0;
 			if(coord.x < 0.0 || coord.x > 1.0 || coord.y < 0.0 || coord.y > 1.0) {
 				color = vec3(0.98, 0.98, 0.98);
 			} else {
