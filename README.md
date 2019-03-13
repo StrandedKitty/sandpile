@@ -1,1 +1,1 @@
-# sandpile
+# Abelian sandpile model implementation
